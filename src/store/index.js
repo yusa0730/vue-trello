@@ -43,16 +43,27 @@ const store =  new Vuex.Store({
     addlist(state, payload) {
       state.lists.push({ title: payload.title, cards:[] })
     },
+    // mutationsのremovelistでは受け取ったリストのインデックスを使ってspliceでリストを削除します。
+    removelist(state, payload) {
+      state.lists.splice(payload.listIndex, 1)
+    }
   },
   actions: {
     addlist(context, payload) {
       context.commit('addlist', payload)
     },
+    // actionsでmutationsのremovelistメソッドをcommitで実行しています。
+    removelist(context, payload) {
+      context.commit('removelist', payload )
+    }
   },
   getters: {
   },
 })
 
+// データの状態を更新後にlocalStorageへデータの状態を保存しています。
+// subscribeはストアのインスタンスメソッドで、全てのmutationの後に呼ばれます。
+// 第一引数にmutationインスタンス、第二引数にmutation後のデータの状態を受け取ります。
 store.subscribe((mutation, state) => {
   localStorage.setItem('trello-lists', JSON.stringify(state.lists))
 })
