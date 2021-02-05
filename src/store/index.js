@@ -46,17 +46,31 @@ const store =  new Vuex.Store({
     // mutationsのremovelistでは受け取ったリストのインデックスを使ってspliceでリストを削除します。
     removelist(state, payload) {
       state.lists.splice(payload.listIndex, 1)
+    },
+    // mutationsのaddCardToListメソッドは、stateのデータへ追加します。
+    // lists配列の中の1つのオブジェクト{}がリスト1つになります。
+    // リスト内でカードを複数持てるように、配列型でcardsを定義しています。
+    // addCardToListメソッドは、このcardsへ新しく作成されたカードを追加します。
+    addCardToList(state, payload) {
+      state.lists[payload.listIndex].cards.push({ body: payload.body})
     }
   },
   actions: {
+    // actionsは第一引数にcontextというストアインスタンスのメソッドやプロパティを呼び出せるオブジェクトを受け取ることができます
+    // 第二引数には、mutationsに渡す引数を指定できます。
     addlist(context, payload) {
       context.commit('addlist', payload)
     },
     // actionsでmutationsのremovelistメソッドをcommitで実行しています。
     removelist(context, payload) {
       context.commit('removelist', payload )
+    },
+    addCardToList(context, payload) {
+      context.commit('addCardToList', payload)
     }
   },
+  // 分割したファイル名をmodulesでまとめて定義してストアインスタンスを生成します。
+  // 今回はストアの定義は1ファイルだけなのでmodulesの代わりにgettersを定義
   getters: {
   },
 })
@@ -65,7 +79,9 @@ const store =  new Vuex.Store({
 // subscribeはストアのインスタンスメソッドで、全てのmutationの後に呼ばれます。
 // 第一引数にmutationインスタンス、第二引数にmutation後のデータの状態を受け取ります。
 store.subscribe((mutation, state) => {
+  // localStorage.setItem('設定するキー', 文字列型のデータ)でデータの状態を更新後にlocalStorageへデータの状態を保存しています。
   localStorage.setItem('trello-lists', JSON.stringify(state.lists))
 })
 
+// main.jsでインポートできるようにexport defaultしています。
 export default store
