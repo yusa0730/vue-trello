@@ -5,11 +5,18 @@
       <!-- クリックイベント時に、removelistメソッドをハンドル -->
       <div class="deletelist" @click="removelist">✖︎</div>
     </div>
+    <!-- CardAddコンポーネントをListコンポーネントで呼び出す -->
+    <card-add :listIndex="listIndex" />
   </div>
 </template>
 
 <script>
+  import CardAdd from './CardAdd'
+
   export default {
+    components: {
+      CardAdd
+    },
     // propsには、親コンポーネントから受け取るデータを定義できます
     // 受け取ったデータはdataプロパティと同じようにアクセスできます
     // propsでデータを受け取る時は、型などの条件を指定できます。
