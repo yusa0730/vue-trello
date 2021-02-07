@@ -3,8 +3,20 @@
     <div class="listheader">
       <p class="list-title">{{ title }}</p>
       <!-- クリックイベント時に、removelistメソッドをハンドル -->
+      <p class="list-counter">total: {{ totalCardList }}</p>
       <div class="deletelist" @click="removelist">✖︎</div>
     </div>
+    <!-- Cardコンポーネントを呼び出し、Cardコンポーネントに必要なデータを渡します。 -->
+    <!-- 必要なデータとは、先ほどCardコンポーネント作成時にpropsで受け取れるように定義したデータのことです。 -->
+    <!-- 受け渡すカードの配列データcardsをv-forディレクティブを使って展開 -->
+    <!-- 展開した値をv-bindディレクティブを使ってバインドさせます。 -->
+    <!-- このcardsデータは、List.vueは持っていないので、新たにBoard.vueからpropsで受け取る必要があります。 -->
+    <card v-for="(item, index) in cards"
+        :body="item.body"
+        :key="item.id"
+        :cardIndex="index"
+        :listIndex="listIndex"
+    />
     <!-- CardAddコンポーネントをListコンポーネントで呼び出す -->
     <card-add :listIndex="listIndex" />
   </div>
@@ -12,10 +24,12 @@
 
 <script>
   import CardAdd from './CardAdd'
+  import Card from './Card'
 
   export default {
     components: {
-      CardAdd
+      CardAdd,
+      Card
     },
     // propsには、親コンポーネントから受け取るデータを定義できます
     // 受け取ったデータはdataプロパティと同じようにアクセスできます
@@ -24,6 +38,10 @@
     props: {
       title: {
         type: String,
+        required: true
+      },
+      cards: {
+        type: Array,
         required: true
       },
       listIndex: {
@@ -41,6 +59,12 @@
           this.$store.dispatch('removelist', { listIndex: this.listIndex })
         }
       },
+    },
+    // propsで受け取っているcardsのデータを利用してその総数を返せるようにします。
+    computed: {
+      totalCardList: function() {
+        return this.cards.length
+      }
     }
   }
 </script>

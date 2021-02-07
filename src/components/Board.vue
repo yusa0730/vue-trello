@@ -16,6 +16,7 @@
           :key="item.id"
           :title="item.title"
           :listIndex="index"
+          :cards="item.cards"
         />
         <list-add/>
       </div>
